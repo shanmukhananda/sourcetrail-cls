@@ -1,0 +1,84 @@
+{
+    "sourceinfo": {
+        "path": "/home/project/source",
+        "packages": [
+            {
+                "name": "mynamespace",
+                "path": "/home/project/source",
+                "classes": [
+                    {
+                        "name": "myclass",
+                        "path": "/home/project/source",
+                        "parents": [
+                            "handle",
+                            "Simulink.Variant"
+                        ],
+                        "methods": {
+                            "public": [
+                                {
+                                    "name": "myMethods1",
+                                    "path": "/home/project/source",
+                                    "calls": [
+                                        "myMethod2"
+                                    ]
+                                },
+                                {
+                                    "name": "myMethods2",
+                                    "path": "/home/project/source",
+                                    "calls": [
+                                        "myMethod1"
+                                    ]
+                                }
+                            ],
+                            "private": [
+                                {
+                                    "name": "myMethods3",
+                                    "path": "/home/project/source",
+                                    "calls": [
+                                        "myMethod4"
+                                    ]
+                                },
+                                {
+                                    "name": "myMethods5",
+                                    "path": "/home/project/source",
+                                    "calls": [
+                                        "myMethod6"
+                                    ]
+                                }
+                            ]
+                        },
+                        "properties": {
+                            "public": [
+                                "data1"
+                            ],
+                            "private": [
+                                "data2"
+                            ]
+                        }
+                    }
+                ],
+                "functions": [
+                    {
+                        "name": "myFreeFunc1",
+                        "path": "/home/project/source",
+                        "calls": [
+                            "myFreeFunc2",
+                            "myclass|function"
+                        ]
+                    },
+                    {
+                        "name": "myFreeFunc3",
+                        "path": "/home/project/source",
+                        "calls": [
+                            "myFreeFunc4"
+                        ]
+                    }
+                ],
+                "variables": [
+                    "myvar1",
+                    "myvar2"
+                ]
+            }
+        ]
+    }
+}

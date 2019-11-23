@@ -1,0 +1,7 @@
+# https://www.appveyor.com/docs/appveyor-yml
+
+image: Ubuntu
+shallow_clone: true
+build_script:
+  - ./scripts/linux/bootstrap.sh
+  - ./scripts/linux/build.sh
