@@ -3,5 +3,5 @@
 image: Ubuntu
 shallow_clone: true
 build_script:
-  - ./scripts/linux/bootstrap.sh
-  - ./scripts/linux/build.sh
+  - sudo chmod -R 777 *
+  - sudo ./scripts/linux/ci_cd.sh
