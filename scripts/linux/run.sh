@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 set -e
@@ -18,14 +19,8 @@ fi
 
 build_dir="${project_dir}/_build/linux.${platform}.${toolset}.${build_type}"
 
-mkdir -p "${build_dir}"
-
-cmake \
-    ${project_dir} \
-    -B${build_dir} \
-    -DCMAKE_BUILD_TYPE=${build_type}
-
-cmake \
-    --build ${build_dir} \
-    --config ${build_type} \
-    -- -j${cores}
+mkdir -p ${project_dir}/_tmp
+${build_dir}/src/cls2srctrl/sourcetrail-cls.cls2srctrl \
+    --cls_input ${project_dir}/data/cls.json \
+    --srctrldb_output ${project_dir}/_tmp/cls.scrtrldb \
+    --wait_for_key false

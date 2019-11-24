@@ -1,82 +1,84 @@
 {
     "sourceinfo": {
-        "path": "/home/project/source",
+        "name" : "myproject",
+        "path": "/home/project/folder",
+        "language": "cpp",
         "packages": [
             {
                 "name": "mynamespace",
-                "path": "/home/project/source",
+                "path": "/home/project/package",
                 "classes": [
                     {
                         "name": "myclass",
-                        "path": "/home/project/source",
+                        "path": "/home/project/myclass.hpp",
                         "parents": [
-                            "handle",
-                            "Simulink.Variant"
+                            "parent1",
+                            "parent2"
                         ],
                         "methods": {
                             "public": [
                                 {
-                                    "name": "myMethods1",
-                                    "path": "/home/project/source",
+                                    "name": "public_method1",
+                                    "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "myMethod2"
+                                        "private_method1"
                                     ]
                                 },
                                 {
-                                    "name": "myMethods2",
-                                    "path": "/home/project/source",
+                                    "name": "public_method2",
+                                    "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "myMethod1"
+                                        "free_function1"
                                     ]
                                 }
                             ],
                             "private": [
                                 {
-                                    "name": "myMethods3",
-                                    "path": "/home/project/source",
+                                    "name": "private_method1",
+                                    "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "myMethod4"
+                                        "private_method2"
                                     ]
                                 },
                                 {
-                                    "name": "myMethods5",
-                                    "path": "/home/project/source",
+                                    "name": "private_method2",
+                                    "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "myMethod6"
+                                        "sum"
                                     ]
                                 }
                             ]
                         },
                         "properties": {
                             "public": [
-                                "data1"
+                                "public_data1"
                             ],
                             "private": [
-                                "data2"
+                                "private_data1"
                             ]
                         }
                     }
                 ],
                 "functions": [
                     {
-                        "name": "myFreeFunc1",
-                        "path": "/home/project/source",
+                        "name": "free_function1",
+                        "path": "/home/project/utils.hpp",
                         "calls": [
-                            "myFreeFunc2",
-                            "myclass|function"
+                            "free_function2",
+                            "mynamespace::myclass::function"
                         ]
                     },
                     {
-                        "name": "myFreeFunc3",
-                        "path": "/home/project/source",
+                        "name": "free_function2",
+                        "path": "/home/project/utils.hpp",
                         "calls": [
-                            "myFreeFunc4"
+                            "free_function1"
                         ]
                     }
                 ],
                 "variables": [
-                    "myvar1",
-                    "myvar2"
+                    "namespace_var1",
+                    "namespace_var2"
                 ]
             }
         ]

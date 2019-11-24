@@ -1,4 +1,4 @@
-#include "common/pch.hpp"
+#include <iostream>
 
 int main(int, char** argv) {
     std::cout << "Hello from " << argv[0] << std::endl;
