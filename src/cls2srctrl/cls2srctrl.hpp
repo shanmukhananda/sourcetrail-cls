@@ -48,8 +48,6 @@ private:
 
     // @todo: shanmukha: SRP
     void record() {
-        _srctrl_db_writer.recordSymbol({"::", {{"void", "hello-sourcetraildb", "()"}}});
-        return;
         for (const auto& pkg : _sourceinfo._packages) {
             record_path(pkg._path);
             sourcetrail::NameHierarchy namespace_name;
@@ -58,7 +56,6 @@ private:
             auto namespace_id = _srctrl_db_writer.recordSymbol(namespace_name);
 	        _srctrl_db_writer.recordSymbolDefinitionKind(namespace_id, sourcetrail::DefinitionKind::EXPLICIT);
 	        _srctrl_db_writer.recordSymbolKind(namespace_id, sourcetrail::SymbolKind::NAMESPACE);
-            break;
             for (const auto& cls : pkg._classes) {
                 record_path(cls._path);
                 sourcetrail::NameHierarchy class_name = namespace_name;
