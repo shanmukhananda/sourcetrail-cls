@@ -1,9 +1,16 @@
 project(sourcetrail-cls.experiments.hello-sourcetraildb)
 
-add_executable(${PROJECT_NAME} main.cpp)
+set(src_list main.cpp)
+find_package(Threads)
 set(lib_list
     sourcetraildb
-    pthread
-    dl
+    Threads::Threads
+    
+    ${CMAKE_DL_LIBS}
 )
+add_executable(${PROJECT_NAME} ${src_list})
 target_link_libraries(${PROJECT_NAME} ${lib_list})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 17
+    CXX_EXTENSIONS OFF
+)

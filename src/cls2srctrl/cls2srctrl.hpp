@@ -17,26 +17,34 @@ public:
     }
 
     void create_srctrldb() {
-        sourcetrail::SourcetrailDBWriter writer;
-        writer.open(_cfg.srctrldb_output().string());
-        writer.recordSymbol({"::", {{"void", "hello-sourcetraildb", "()"}}});
-        writer.close();
-        return;
-        _srctrl_db_writer.open(_cfg.srctrldb_output().string());
-        //_srctrl_db_writer.beginTransaction();
+        auto is_open = _srctrl_db_writer.open(_cfg.srctrldb_output().string());
+        throw_on_error(is_open);
+        _srctrl_db_writer.beginTransaction();
         try {
-            record();
+            // record();
+            record_sample_data();
         } catch (const std::exception& ex) {
             std::cout << "caught exception:" << ex.what() << std::endl;
-            _srctrl_db_writer.rollbackTransaction();
-            _srctrl_db_writer.close();
+            auto is_rooledback = _srctrl_db_writer.rollbackTransaction();
+            throw_on_error(is_rooledback);
+            auto is_closed = _srctrl_db_writer.close();
+            throw_on_error(is_closed);
             return;
         }
         //_srctrl_db_writer.commitTransaction();
-        _srctrl_db_writer.close();
+        auto is_closed = _srctrl_db_writer.close();
+        throw_on_error(is_closed);
     }
 
 private:
+    void throw_on_error(bool is_valid) {
+        if(!is_valid) {
+            auto error = _srctrl_db_writer.getLastError();
+            std::cerr << "ERROR: " << error << std::endl;
+            throw std::runtime_error(error);
+        }
+    }
+
     void read_json(std::istream& is) {
         pt::ptree root;
         pt::read_json(is, root);
@@ -46,6 +54,10 @@ private:
         // _sourceinfo.print(std::cout);
     }
 
+    void record_sample_data() {
+        auto id = _srctrl_db_writer.recordSymbol({"::", {{"void", __FUNCTION__, "()"}}});
+        throw_on_error(id != 0);
+    }
     // @todo: shanmukha: SRP
     void record() {
         for (const auto& pkg : _sourceinfo._packages) {

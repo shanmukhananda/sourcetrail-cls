@@ -5,7 +5,6 @@
 
 void run(int argc, char** argv) {
     cls2st::config cfg(argc, argv);
-
     if(cfg.wait_for_key()) {
         std::cout << "press any char and enter to continue\n";
         char x{};
@@ -29,3 +28,4 @@ int main(int argc, char** argv) {
     }
     return EXIT_SUCCESS;
 }
+
