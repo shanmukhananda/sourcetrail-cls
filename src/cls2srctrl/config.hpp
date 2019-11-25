@@ -20,6 +20,7 @@ public:
     bool wait_for_key() const {
         return _wait_for_key;
     }
+
 private:
     void parse(int argc, char** argv) {
         po::options_description cmd_opts("options");

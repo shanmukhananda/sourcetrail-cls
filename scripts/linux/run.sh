@@ -20,7 +20,12 @@ fi
 build_dir="${project_dir}/_build/linux.${platform}.${toolset}.${build_type}"
 
 mkdir -p ${project_dir}/_tmp
+pushd ${project_dir}/_tmp > /dev/null
+
 ${build_dir}/src/cls2srctrl/sourcetrail-cls.cls2srctrl \
     --cls_input ${project_dir}/data/cls.json \
     --srctrldb_output ${project_dir}/_tmp/cls.scrtrldb \
     --wait_for_key false
+
+popd > /dev/null
+
