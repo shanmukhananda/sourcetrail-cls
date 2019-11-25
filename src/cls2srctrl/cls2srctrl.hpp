@@ -17,18 +17,25 @@ public:
     }
 
     void create_srctrldb() {
-        auto is_open = _srctrl_db_writer.open("MyProject.srctrldb");
+        // srctrldb created this way, fails to load, reason UNKNOWN
+        // std::string output_fname = _cfg.srctrldb_output().string();
+        // std::string output_fname =
+        // _cfg.srctrldb_output().filename().string();
+        // @todo: debug why the file created by std::filesystem::path fails to
+        // load in Sourcetrail
+        std::string output_fname = "project.srctrldb";
+        auto is_open = _srctrl_db_writer.open(output_fname);
         throw_on_error(is_open);
         auto is_begin_success = _srctrl_db_writer.beginTransaction();
         throw_on_error(is_begin_success);
 
         try {
-            // record();
-            record_sample_data();
+            record();
+            // record_sample_data();
         } catch (const std::exception& ex) {
-            std::cout << "caught exception:" << ex.what() << std::endl;
-            auto is_rooledback = _srctrl_db_writer.rollbackTransaction();
-            throw_on_error(is_rooledback);
+            std::cerr << "ERROR: caught exception:" << ex.what() << std::endl;
+            auto is_rolledback = _srctrl_db_writer.rollbackTransaction();
+            throw_on_error(is_rolledback);
             auto is_closed = _srctrl_db_writer.close();
             throw_on_error(is_closed);
             return;
@@ -41,11 +48,12 @@ public:
 
 private:
     void throw_on_error(bool is_valid) {
-        if (!is_valid) {
-            auto error = _srctrl_db_writer.getLastError();
-            std::cerr << "ERROR: " << error << std::endl;
-            throw std::runtime_error(error);
+        if (is_valid) {
+            return;
         }
+        auto error = _srctrl_db_writer.getLastError();
+        std::cerr << "ERROR: " << error << std::endl;
+        throw std::runtime_error(error);
     }
 
     void read_json(std::istream& is) {
@@ -61,74 +69,150 @@ private:
             {"::", {{"void", "hello_sourcetraildb", "()"}}});
         throw_on_error(id != 0);
     }
-    // @todo: shanmukha: SRP
+
+    // @todo: check the return values, throw on error
     void record() {
         for (const auto& pkg : _sourceinfo._packages) {
-            record_path(pkg._path);
-            sourcetrail::NameHierarchy namespace_name;
-            namespace_name.nameDelimiter = "::";
-            namespace_name.nameElements.push_back({"", pkg._name, ""});
-            auto namespace_id = _srctrl_db_writer.recordSymbol(namespace_name);
+            record_package(pkg);
+        }
+    }
+
+    void record_package(const types::package& pkg) {
+        record_path(pkg._path);
+        sourcetrail::NameHierarchy namespace_name;
+        record_package_name(namespace_name, pkg);
+        record_package_classes(namespace_name, pkg);
+        record_package_functions(namespace_name, pkg);
+        record_package_variables(namespace_name, pkg);
+    }
+
+    void record_package_name(sourcetrail::NameHierarchy& namespace_name,
+                             const types::package& pkg) {
+        namespace_name.nameDelimiter = NAMESPACE_DELIMITER;
+        namespace_name.nameElements.push_back({"", pkg._name, ""});
+        auto namespace_id = _srctrl_db_writer.recordSymbol(namespace_name);
+        _srctrl_db_writer.recordSymbolDefinitionKind(
+            namespace_id, sourcetrail::DefinitionKind::EXPLICIT);
+        _srctrl_db_writer.recordSymbolKind(namespace_id,
+                                           sourcetrail::SymbolKind::NAMESPACE);
+    }
+
+    void record_package_classes(sourcetrail::NameHierarchy& namespace_name,
+                                const types::package& pkg) {
+        for (const auto& cls : pkg._classes) {
+            record_class(namespace_name, cls);
+        }
+    }
+
+    void record_class(sourcetrail::NameHierarchy& namespace_name,
+                      const types::a_class& cls) {
+        record_path(cls._path);
+        sourcetrail::NameHierarchy class_name = namespace_name;
+        auto class_id = record_class_name(class_name, cls);
+        record_class_parents(class_id, cls);
+        // @todo: Find API to represent public and private
+        record_class_methods(class_name, cls);
+        record_class_properties(class_name, cls);
+    }
+
+    int record_class_name(sourcetrail::NameHierarchy& class_name,
+                          const types::a_class& cls) {
+        class_name.nameElements.push_back({"", cls._name, ""});
+        auto class_id = _srctrl_db_writer.recordSymbol(class_name);
+        _srctrl_db_writer.recordSymbolDefinitionKind(
+            class_id, sourcetrail::DefinitionKind::EXPLICIT);
+        _srctrl_db_writer.recordSymbolKind(class_id,
+                                           sourcetrail::SymbolKind::CLASS);
+        return class_id;
+    }
+
+    void record_class_parents(const int class_id, const types::a_class& cls) {
+        for (const auto& parent : cls._parents) {
+            auto base_id = _srctrl_db_writer.recordSymbol(
+                {NAMESPACE_DELIMITER, {{"", parent, ""}}});
+            _srctrl_db_writer.recordReference(
+                class_id, base_id, sourcetrail::ReferenceKind::INHERITANCE);
+        }
+    }
+
+    //@todo: record calls
+    void record_class_methods(sourcetrail::NameHierarchy& class_name,
+                              const types::a_class& cls) {
+        auto methods = cls._methods._public;
+        methods.insert(methods.begin(), cls._methods._private.begin(),
+                       cls._methods._private.end());
+        for (const auto& meth : methods) {
+            record_path(meth._path);
+            sourcetrail::NameHierarchy method_name = class_name;
+            method_name.nameElements.push_back({"", meth._name, "()"});
+            auto method_id = _srctrl_db_writer.recordSymbol(method_name);
             _srctrl_db_writer.recordSymbolDefinitionKind(
-                namespace_id, sourcetrail::DefinitionKind::EXPLICIT);
+                method_id, sourcetrail::DefinitionKind::EXPLICIT);
+            _srctrl_db_writer.recordSymbolKind(method_id,
+                                               sourcetrail::SymbolKind::METHOD);
+        }
+    }
+
+    void record_class_properties(sourcetrail::NameHierarchy& class_name,
+                                 const types::a_class& cls) {
+        auto propertes = cls._properties._public;
+        propertes.insert(propertes.begin(), cls._properties._private.begin(),
+                         cls._properties._private.end());
+
+        for (const auto& prop : propertes) {
+            sourcetrail::NameHierarchy property_name = class_name;
+            property_name.nameElements.push_back({"", prop, ""});
+            auto prop_id = _srctrl_db_writer.recordSymbol(property_name);
+            _srctrl_db_writer.recordSymbolDefinitionKind(
+                prop_id, sourcetrail::DefinitionKind::EXPLICIT);
+            _srctrl_db_writer.recordSymbolKind(prop_id,
+                                               sourcetrail::SymbolKind::FIELD);
+        }
+    }
+
+    //@todo: record calls
+    void record_package_functions(sourcetrail::NameHierarchy& namespace_name,
+                                  const types::package& pkg) {
+        for (const auto& fcn : pkg._functions) {
+            record_path(fcn._path);
+            sourcetrail::NameHierarchy functions_name = namespace_name;
+            functions_name.nameElements.push_back({"", fcn._name, "()"});
+            auto fcn_id = _srctrl_db_writer.recordSymbol(functions_name);
+            _srctrl_db_writer.recordSymbolDefinitionKind(
+                fcn_id, sourcetrail::DefinitionKind::EXPLICIT);
             _srctrl_db_writer.recordSymbolKind(
-                namespace_id, sourcetrail::SymbolKind::NAMESPACE);
-            for (const auto& cls : pkg._classes) {
-                record_path(cls._path);
-                sourcetrail::NameHierarchy class_name = namespace_name;
-                class_name.nameElements.push_back({"", cls._name, ""});
-                auto class_id = _srctrl_db_writer.recordSymbol(class_name);
-                _srctrl_db_writer.recordSymbolDefinitionKind(
-                    class_id, sourcetrail::DefinitionKind::EXPLICIT);
-                _srctrl_db_writer.recordSymbolKind(
-                    class_id, sourcetrail::SymbolKind::CLASS);
+                fcn_id, sourcetrail::SymbolKind::FUNCTION);
+        }
+    }
 
-                for (const auto& parent : cls._parents) {
-                    auto base_id = _srctrl_db_writer.recordSymbol(
-                        {"::", {{"", parent, ""}}});
-                    _srctrl_db_writer.recordReference(
-                        class_id, base_id,
-                        sourcetrail::ReferenceKind::INHERITANCE);
-                }
-                auto methods = cls._methods._public;
-                methods.insert(methods.begin(), cls._methods._private.begin(),
-                               cls._methods._private.end());
-                for (const auto& meth : methods) {
-                    record_path(meth._path);
-                    	sourcetrail::NameHierarchy method_name = class_name;
-                    method_name.nameElements.push_back({"", meth._name, "()"});
-                    auto method_id =
-                        _srctrl_db_writer.recordSymbol(method_name);
-                    _srctrl_db_writer.recordSymbolDefinitionKind(
-                        method_id, sourcetrail::DefinitionKind::EXPLICIT);
-                    _srctrl_db_writer.recordSymbolKind(
-                        method_id, sourcetrail::SymbolKind::METHOD);
-                }
-            }
-
-            for (const auto& fcn : pkg._functions) {
-                record_path(fcn._path);
-            }
+    void record_package_variables(sourcetrail::NameHierarchy& namespace_name,
+                                  const types::package& pkg) {
+        for (const auto& var : pkg._variables) {
+            sourcetrail::NameHierarchy variables_name = namespace_name;
+            variables_name.nameElements.push_back({"", var, ""});
+            auto var_id = _srctrl_db_writer.recordSymbol(variables_name);
+            _srctrl_db_writer.recordSymbolDefinitionKind(
+                var_id, sourcetrail::DefinitionKind::EXPLICIT);
+            _srctrl_db_writer.recordSymbolKind(
+                var_id, sourcetrail::SymbolKind::GLOBAL_VARIABLE);
         }
     }
 
     void record_path(const fs::path& path_) {
-        return;
-        std::cout << "Recoding path:" << path_ << std::endl;
-        if (path_.has_extension()) {
-            auto ext = path_.extension().string();
-            ext.erase(ext.begin());
-            auto file_id = _srctrl_db_writer.recordFile(path_.string());
-            auto is_recorded = _srctrl_db_writer.recordFileLanguage(
-                file_id, _sourceinfo._language);
-            if (!is_recorded) {
-                std::cerr << _srctrl_db_writer.getLastError() << std::endl;
-            }
+        if (!path_.has_extension()) {
+            return;
         }
+        auto ext = path_.extension().string();
+        ext.erase(ext.begin());
+        auto file_id = _srctrl_db_writer.recordFile(path_.string());
+        auto is_recorded = _srctrl_db_writer.recordFileLanguage(
+            file_id, _sourceinfo._language);
+        throw_on_error(is_recorded);
     }
 
     const config& _cfg;
     types::sourceinfo _sourceinfo{};
     sourcetrail::SourcetrailDBWriter _srctrl_db_writer{};
+    const std::string NAMESPACE_DELIMITER = "::";
 };
 } // namespace cls2st

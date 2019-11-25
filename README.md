@@ -11,6 +11,10 @@
 [appveyor_status]: https://ci.appveyor.com/api/projects/status/x9rv935g9ki26i9f?svg=true
 [appveyor_builds]: https://ci.appveyor.com/project/shanmukhananda/sourcetrail-cls
 
+## Demo
+Sourcetrial project created from [CLS JSON file](data/cls.json)
+![Alt Text](docs/demo.gif)
+
 ## Installation
 Refer [Installation](docs/Installation.md)
 
