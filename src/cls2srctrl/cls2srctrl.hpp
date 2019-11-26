@@ -62,6 +62,7 @@ private:
 
         const auto& sourceinfo_ = root.get_child("sourceinfo");
         _sourceinfo.read_json(sourceinfo_);
+        // _sourceinfo.print(std::cout);
     }
 
     void record_sample_data() {
@@ -135,7 +136,6 @@ private:
         }
     }
 
-    //@todo: record calls
     void record_class_methods(sourcetrail::NameHierarchy& class_name,
                               const types::a_class& cls) {
         auto methods = cls._methods._public;
@@ -150,6 +150,7 @@ private:
                 method_id, sourcetrail::DefinitionKind::EXPLICIT);
             _srctrl_db_writer.recordSymbolKind(method_id,
                                                sourcetrail::SymbolKind::METHOD);
+            record_calls(method_id, meth._calls);
         }
     }
 
@@ -170,7 +171,6 @@ private:
         }
     }
 
-    //@todo: record calls
     void record_package_functions(sourcetrail::NameHierarchy& namespace_name,
                                   const types::package& pkg) {
         for (const auto& fcn : pkg._functions) {
@@ -182,6 +182,7 @@ private:
                 fcn_id, sourcetrail::DefinitionKind::EXPLICIT);
             _srctrl_db_writer.recordSymbolKind(
                 fcn_id, sourcetrail::SymbolKind::FUNCTION);
+            record_calls(fcn_id, fcn._calls);
         }
     }
 
@@ -195,6 +196,27 @@ private:
                 var_id, sourcetrail::DefinitionKind::EXPLICIT);
             _srctrl_db_writer.recordSymbolKind(
                 var_id, sourcetrail::SymbolKind::GLOBAL_VARIABLE);
+        }
+    }
+
+    void record_calls(const int caller_id, const types::calls_t& calls) {
+        for (const auto& call : calls) {
+            record_path(call._path);
+            sourcetrail::NameHierarchy callee_name;
+            callee_name.nameDelimiter = NAMESPACE_DELIMITER;
+            for (const auto& pkg_name : call._package_hierarchy) {
+                callee_name.nameElements.push_back({"", pkg_name, ""});
+            }
+            for (const auto& cls_name : call._class_hierarchy) {
+                callee_name.nameElements.push_back({"", cls_name, ""});
+            }
+            callee_name.nameElements.push_back({"", call._name, "()"});
+            auto callee_id = _srctrl_db_writer.recordSymbol(callee_name);
+
+            _srctrl_db_writer.recordSymbolKind(
+                callee_id, sourcetrail::SymbolKind::FUNCTION);
+            auto call_id = _srctrl_db_writer.recordReference(
+                caller_id, callee_id, sourcetrail::ReferenceKind::CALL);
         }
     }
 

@@ -7,6 +7,55 @@ namespace pt = boost::property_tree;
 
 namespace cls2st {
 namespace types {
+
+using package_hierarchy_t = std::vector<std::string>;
+using class_hierarchy_t = std::vector<std::string>;
+
+// @todo: replace print with operator << or write method to get back json file
+class a_call {
+public:
+    void read_json(const pt::ptree& root) {
+        _name = root.get<std::string>("name");
+        _path = root.get<fs::path>("path");
+
+        const auto& pkg_hier_ = root.get_child("package_hierarchy");
+        for (const auto& pkg_name : pkg_hier_) {
+            auto p = pkg_name.second.get_value<std::string>();
+            _package_hierarchy.emplace_back(p);
+        }
+
+        const auto& cls_hier_ = root.get_child("class_hierarchy");
+        for (const auto& cls_name : cls_hier_) {
+            auto c = cls_name.second.get_value<std::string>();
+            _class_hierarchy.emplace_back(c);
+        }
+    }
+
+    void print(std::ostream& os) const {
+        os << "_name:" << _name << "\n";
+        os << "_path:" << _path << "\n";
+
+        std::size_t pkg_hier_count{};
+        for (const auto& pkg_hier : _package_hierarchy) {
+            os << "package_hierarchy(" << ++pkg_hier_count << "):\n";
+            os << pkg_hier << "\n";
+        }
+
+        std::size_t cls_hier_count{};
+        for (const auto& cls_hier : _class_hierarchy) {
+            os << "class_hierarchy(" << ++cls_hier_count << "):\n";
+            os << cls_hier << "\n";
+        }
+    }
+
+    std::string _name{};
+    fs::path _path{};
+    package_hierarchy_t _package_hierarchy{};
+    class_hierarchy_t _class_hierarchy{};
+};
+
+using calls_t = std::vector<a_call>;
+
 class a_function {
 public:
     void read_json(const pt::ptree& root) {
@@ -14,8 +63,9 @@ public:
         _path = root.get<fs::path>("path");
         const auto& calls_ = root.get_child("calls");
         for (const auto& call : calls_) {
-            auto c = call.second.get_value<std::string>();
-            _calls.emplace_back(c);
+            a_call call_;
+            call_.read_json(call.second);
+            _calls.emplace_back(call_);
         }
     }
 
@@ -26,12 +76,12 @@ public:
         std::size_t calls_count{};
         for (const auto& call : _calls) {
             os << "calls(" << ++calls_count << "):\n";
-            os << call << "\n";
+            call.print(os);
         }
     }
     std::string _name{};
     fs::path _path{};
-    std::vector<std::string> _calls{};
+    calls_t _calls{};
 };
 
 using variables_t = std::vector<std::string>;

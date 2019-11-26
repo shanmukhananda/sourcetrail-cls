@@ -1,6 +1,6 @@
 {
     "sourceinfo": {
-        "name" : "myproject",
+        "name": "myproject",
         "path": "/home/project/folder",
         "language": "cpp",
         "packages": [
@@ -21,14 +21,16 @@
                                     "name": "public_method1",
                                     "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "private_method1"
-                                    ]
-                                },
-                                {
-                                    "name": "public_method2",
-                                    "path": "/home/project/myclass.cpp",
-                                    "calls": [
-                                        "free_function1"
+                                        {
+                                            "name": "private_method1",
+                                            "path": "/home/project/myclass.hpp",
+                                            "package_hierarchy": [
+                                                "mynamespace"
+                                            ],
+                                            "class_hierarchy": [
+                                                "myclass"
+                                            ]
+                                        }
                                     ]
                                 }
                             ],
@@ -37,14 +39,12 @@
                                     "name": "private_method1",
                                     "path": "/home/project/myclass.cpp",
                                     "calls": [
-                                        "private_method2"
-                                    ]
-                                },
-                                {
-                                    "name": "private_method2",
-                                    "path": "/home/project/myclass.cpp",
-                                    "calls": [
-                                        "sum"
+                                        {
+                                            "name": "sum",
+                                            "path": "/home/project/sum.hpp",
+                                            "package_hierarchy": [],
+                                            "class_hierarchy": []
+                                        }
                                     ]
                                 }
                             ]
@@ -64,15 +64,12 @@
                         "name": "free_function1",
                         "path": "/home/project/utils.hpp",
                         "calls": [
-                            "free_function2",
-                            "mynamespace::myclass::function"
-                        ]
-                    },
-                    {
-                        "name": "free_function2",
-                        "path": "/home/project/utils.hpp",
-                        "calls": [
-                            "free_function1"
+                            {
+                                "name": "free_function3",
+                                "path": "/home/project/utils.hpp",
+                                "package_hierarchy": [],
+                                "class_hierarchy": []
+                            }
                         ]
                     }
                 ],
