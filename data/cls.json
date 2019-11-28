@@ -65,7 +65,7 @@
                         "path": "/home/project/utils.hpp",
                         "calls": [
                             {
-                                "name": "free_function3",
+                                "name": "free_function2",
                                 "path": "/home/project/utils.hpp",
                                 "package_hierarchy": [],
                                 "class_hierarchy": []
