@@ -1,9 +1,9 @@
 #pragma once
 
 #include "common/pch.hpp"
+#include "cls2srctrl/types.hpp"
 
 namespace po = boost::program_options;
-namespace fs = std::experimental::filesystem;
 
 namespace cls2st {
 class config {
@@ -11,10 +11,10 @@ public:
     config(int argc, char** argv) {
         parse(argc, argv);
     }
-    const fs::path& cls_input() const {
+    const types::path_t& cls_input() const {
         return _cls_input;
     }
-    const fs::path& srctrldb_output() const {
+    const types::path_t& srctrldb_output() const {
         return _srctrldb_output;
     }
     bool wait_for_key() const {
@@ -27,8 +27,8 @@ private:
         // clang-format off
         cmd_opts.add_options()
             ("help", "produce help message")
-            ("cls_input", po::value<fs::path>(&_cls_input)->required(), "input json file in CLS format")
-            ("srctrldb_output", po::value<fs::path>(&_srctrldb_output)->required(), "output .srctrldb file to be generated")
+            ("cls_input", po::value<types::path_t>(&_cls_input)->required(), "input json file in CLS format")
+            ("srctrldb_output", po::value<types::path_t>(&_srctrldb_output)->required(), "output .srctrldb file to be generated")
             ("wait_for_key", po::value<bool>(&_wait_for_key), "if true program halts waiting for keyboard input, used to support `Attach to debugger`")
         ;
         // clang-format on
@@ -42,8 +42,8 @@ private:
 
         po::notify(vm);
     }
-    fs::path _cls_input{};
-    fs::path _srctrldb_output{};
+    types::path_t _cls_input{};
+    types::path_t _srctrldb_output{};
     bool _wait_for_key{false};
 };
 } // namespace cls2st

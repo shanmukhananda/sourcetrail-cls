@@ -1,9 +1,9 @@
 #pragma once
 
+#include "common/pch.hpp"
+
 #include "cls2srctrl/config.hpp"
 #include "cls2srctrl/types.hpp"
-
-namespace fs = std::experimental::filesystem;
 
 namespace cls2st {
 class cls2srctrl {
@@ -220,13 +220,8 @@ private:
         }
     }
 
-    void record_path(const fs::path& path_) {
-        if (!path_.has_extension()) {
-            return;
-        }
-        auto ext = path_.extension().string();
-        ext.erase(ext.begin());
-        auto file_id = _srctrl_db_writer.recordFile(path_.string());
+    void record_path(const types::path_t& path_) {
+        auto file_id = _srctrl_db_writer.recordFile(path_);
         auto is_recorded = _srctrl_db_writer.recordFileLanguage(
             file_id, _sourceinfo._language);
         throw_on_error(is_recorded);

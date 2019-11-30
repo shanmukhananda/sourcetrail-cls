@@ -2,12 +2,12 @@
 
 #include "common/pch.hpp"
 
-namespace fs = std::experimental::filesystem;
-namespace pt = boost::property_tree;
+#include "cls2srctrl/types.hpp"
 
+namespace pt = boost::property_tree;
 namespace cls2st {
 namespace types {
-
+using path_t = std::string;
 using package_hierarchy_t = std::vector<std::string>;
 using class_hierarchy_t = std::vector<std::string>;
 
@@ -16,7 +16,7 @@ class a_call {
 public:
     void read_json(const pt::ptree& root) {
         _name = root.get<std::string>("name");
-        _path = root.get<fs::path>("path");
+        _path = root.get<types::path_t>("path");
 
         const auto& pkg_hier_ = root.get_child("package_hierarchy");
         for (const auto& pkg_name : pkg_hier_) {
@@ -49,7 +49,7 @@ public:
     }
 
     std::string _name{};
-    fs::path _path{};
+    types::path_t _path{};
     package_hierarchy_t _package_hierarchy{};
     class_hierarchy_t _class_hierarchy{};
 };
@@ -60,7 +60,7 @@ class a_function {
 public:
     void read_json(const pt::ptree& root) {
         _name = root.get<std::string>("name");
-        _path = root.get<fs::path>("path");
+        _path = root.get<types::path_t>("path");
         const auto& calls_ = root.get_child("calls");
         for (const auto& call : calls_) {
             a_call call_;
@@ -80,7 +80,7 @@ public:
         }
     }
     std::string _name{};
-    fs::path _path{};
+    types::path_t _path{};
     calls_t _calls{};
 };
 
@@ -90,6 +90,7 @@ using functions_t = std::vector<a_function>;
 class methods {
 public:
     void read_json(const pt::ptree& root) {
+
         populate_property(root, "public", _public);
         populate_property(root, "private", _private);
     }
@@ -157,7 +158,7 @@ class a_class {
 public:
     void read_json(const pt::ptree& root) {
         _name = root.get<std::string>("name");
-        _path = root.get<fs::path>("path");
+        _path = root.get<types::path_t>("path");
         const auto& parents_ = root.get_child("parents");
         for (const auto& parent : parents_) {
             auto p = parent.second.get_value<std::string>();
@@ -188,7 +189,7 @@ public:
     }
 
     std::string _name{};
-    fs::path _path{};
+    types::path_t _path{};
     std::vector<std::string> _parents{};
     methods _methods{};
     properties _properties{};
@@ -200,7 +201,7 @@ class package {
 public:
     void read_json(const pt::ptree& root) {
         _name = root.get<std::string>("name");
-        _path = root.get<fs::path>("path");
+        _path = root.get<types::path_t>("path");
         const auto& classes_ = root.get_child("classes");
         for (const auto& cls : classes_) {
             a_class c;
@@ -244,7 +245,7 @@ public:
         }
     }
     std::string _name{};
-    fs::path _path{};
+    types::path_t _path{};
     classes_t _classes{};
     functions_t _functions{};
     variables_t _variables{};
@@ -256,7 +257,7 @@ public:
     void read_json(const pt::ptree& root) {
         _name = root.get<std::string>("name");
         _language = root.get<std::string>("language");
-        _path = root.get<fs::path>("path");
+        _path = root.get<types::path_t>("path");
         const auto& packages_ = root.get_child("packages");
         for (const auto& pkg : packages_) {
             package p;
@@ -280,7 +281,7 @@ public:
     }
     std::string _name{};
     std::string _language{};
-    fs::path _path{};
+    types::path_t _path{};
     packages_t _packages{};
 };
 } // namespace types

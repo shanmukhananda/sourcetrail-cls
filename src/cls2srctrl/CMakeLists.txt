@@ -6,7 +6,6 @@ find_package(Threads)
 set(lib_list
     Boost::program_options
     sourcetraildb
-    stdc++fs
     Threads::Threads
 
     ${CMAKE_DL_LIBS}
