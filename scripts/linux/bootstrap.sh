@@ -22,7 +22,9 @@ function install_dependencies() {
         cmake \
         git \
         libboost-all-dev \
-        wget
+        rsync \
+        wget \
+        zip
 }
 
 function download_file() {

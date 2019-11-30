@@ -17,15 +17,15 @@ then
     build_type="$1"
 fi
 
-build_dir="${project_dir}/_build/linux.${platform}.${toolset}.${build_type}"
+install_dir="${project_dir}/_out/install/linux.${platform}.${toolset}.${build_type}"
+results_dir="${project_dir}/_out/results"
 
-mkdir -p ${project_dir}/_tmp
-pushd ${project_dir}/_tmp > /dev/null
+mkdir -p ${results_dir}
+pushd ${results_dir} > /dev/null
 
-${build_dir}/src/cls2srctrl/sourcetrail-cls.cls2srctrl \
+${install_dir}/bin/sourcetrail-cls.cls2srctrl \
     --cls_input ${project_dir}/data/cls.json \
-    --srctrldb_output ${project_dir}/_tmp/cls.scrtrldb \
-    --wait_for_key false
+    --srctrldb_output ${results_dir}/cls.scrtrldb \
+    --wait_for_key true
 
 popd > /dev/null
-
