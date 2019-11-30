@@ -3,6 +3,7 @@
 #include "cls2srctrl/cls2srctrl.hpp"
 #include "cls2srctrl/config.hpp"
 
+namespace cls2st {
 void run(int argc, char** argv) {
     cls2st::config cfg(argc, argv);
     if (cfg.wait_for_key()) {
@@ -15,16 +16,18 @@ void run(int argc, char** argv) {
     app.parse_cls();
     app.create_srctrldb();
 }
+} // namespace cls2st
 
 int main(int argc, char** argv) {
+    auto exit_status{EXIT_SUCCESS};
     try {
-        run(argc, argv);
+        cls2st::run(argc, argv);
     } catch (const std::exception& ex) {
         std::cerr << argv[0] << ":caught exception:" << ex.what() << std::endl;
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
     } catch (...) {
         std::cerr << argv[0] << ":caught unknown exception" << std::endl;
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
     }
-    return EXIT_SUCCESS;
+    return exit_status;
 }

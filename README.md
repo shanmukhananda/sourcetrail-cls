@@ -18,18 +18,21 @@ Sourcetrial project created from [CLS JSON file](data/cls.json)
 
 ## Installation
 
-Refer [Installation](docs/Installation.md)
+- `scripts/linux/bootstrap.sh`
 
 ## Build
 
-- `scripts/linux/bootstrap.sh`
 - `scripts/linux/build.sh`
 
 ## Usage
 
 - `scripts/linux/run.sh`
 
-Modify `run.sh` according to your need
+This runs the cls2srctrl app with example CLS input `data/cls.json`. Modify `run.sh` according to your need
+
+- `scripts/linux/code_format.sh`
+
+Use this script to format C++ and CMake files
 
 ## Known Issues
 
