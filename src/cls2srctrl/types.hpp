@@ -90,7 +90,6 @@ using functions_t = std::vector<a_function>;
 class methods {
 public:
     void read_json(const pt::ptree& root) {
-
         populate_property(root, "public", _public);
         populate_property(root, "private", _private);
     }

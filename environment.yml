@@ -1,6 +1,0 @@
-name: sourcetrail-cls
-channels:
-    - anaconda
-    - conda-forge
-dependencies:
-    - python=3.7.0

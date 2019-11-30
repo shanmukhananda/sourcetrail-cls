@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/pch.hpp"
 #include "cls2srctrl/types.hpp"
+#include "common/pch.hpp"
 
 namespace po = boost::program_options;
 

@@ -19,12 +19,15 @@ function install_dependencies() {
     apt-get install -y \
         apt-utils \
         build-essential \
+        clang-format \
         cmake \
         git \
         libboost-all-dev \
+        python3-pip \
         rsync \
         wget \
         zip
+    pip3 install cmake-format
 }
 
 function download_file() {

@@ -1,2 +1,0 @@
-cmake_format==0.4.3
-yapf==0.25.0
