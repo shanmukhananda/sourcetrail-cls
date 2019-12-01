@@ -13,7 +13,7 @@
 
 ## Demo
 
-Sourcetrial project created from [CLS JSON file](data/cls.json)
+[Sourcetrail](https://www.sourcetrail.com/) project created from [CLS JSON file](data/cls.json)
 
 ![Alt Text](docs/demo.gif)
 
@@ -26,7 +26,7 @@ Sourcetrial project created from [CLS JSON file](data/cls.json)
     - Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with below Workloads
         - [Desktop development for C++](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=vs-2019)
         - [Linux development for C++](https://docs.microsoft.com/en-us/cpp/linux/download-install-and-setup-the-linux-development-workload?view=vs-2019)
-    - [Install Windows Subystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+    - [Install Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
     - Launch Ubuntu bash shell and execute `scripts/linux/bootstrap.sh`
 
 ## Build
@@ -48,7 +48,7 @@ Sourcetrial project created from [CLS JSON file](data/cls.json)
 - For Visual Studio
     - Select Configuration `WSL-Debug`
     - Select Start Item `sourcetrail-cls.cls2srctrl (src\\cls2srctrl\\sourcetrail-cls.cls2srctrl)` from drop down
-    - Lauch using F5 or Green Play Button
+    - Launch using F5 or Green Play Button
 
 ## Code Format
 
@@ -56,8 +56,8 @@ Both C++ and CMake files can be formatted using `scripts/linux/code_format.sh`
 
 ## Known Issues
 
-- Ouput file will always be `project.srctrldb`
+- Output file will always be `project.srctrldb`
     - Original idea is to parametrize output file by taking the output path as argument
     - If you run the app `sourcetrail-cls.cls2srctrl`, parameter `--srctrldb_output` has no effect 
     - It is possible to create `.srctrldb` file using this idea. But the created file fails to load in Sourcetrail. This needs to be investigated.
-    - Output path is hardcoded in file, `src/cls2srctrl/cls2srctr.hpp`, function `cls2st::cls2srctrl::create_srctrldb`
+    - Output path is hard-coded in file, `src/cls2srctrl/cls2srctrl.cpp`, function `cls2st::cls2srctrl::create_srctrldb`
