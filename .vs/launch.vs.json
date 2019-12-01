@@ -1,0 +1,33 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "cppdbg",
+      "name": "sourcetrail-cls.cls2srctrl (src\\cls2srctrl\\sourcetrail-cls.cls2srctrl)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "sourcetrail-cls.cls2srctrl (src\\cls2srctrl\\sourcetrail-cls.cls2srctrl)",
+      "cwd": "${debugInfo.defaultWorkingDirectory}",
+      "program": "${debugInfo.fullTargetPath}",
+      "MIMode": "gdb",
+      "externalConsole": true,
+      "remoteMachineName": "${debugInfo.remoteMachineName}",
+      "setupCommands": [
+        {
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "visualizerFile": "${debugInfo.linuxNatvisPath}",
+      "showDisplayString": true,
+      "args": [
+        "--cls_input",
+        "$(realpath ${debugInfo.defaultWorkingDirectory}/../../../../..)/data/cls.json",
+        "--srctrldb_output",
+        "$(realpath ${debugInfo.defaultWorkingDirectory})/cls.scrtrldb",
+        "--wait_for_key",
+        "false"
+      ]
+    }
+  ]
+}
