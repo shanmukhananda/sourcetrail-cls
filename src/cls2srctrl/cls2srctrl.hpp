@@ -15,7 +15,6 @@ public:
 private:
     void throw_on_error(bool is_valid);
     void read_json(std::istream& is);
-    void record_sample_data();
     void record();
     void record_package(const types::package&);
     void

@@ -54,6 +54,10 @@
 
 Both C++ and CMake files can be formatted using `scripts/linux/code_format.sh`
 
+## Static Analysis
+
+Run `scripts/linux/quality.sh` to perform code quality checks
+
 ## Known Issues
 
 - Output file will always be `project.srctrldb`

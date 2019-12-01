@@ -5,8 +5,7 @@
 namespace launcher {
 class launcher_raii {
 public:
-    launcher_raii(int argc, char** argv) {
-        _app_name = argv[0];
+    launcher_raii(int argc, char** argv) : _app_name(argv[0]) {
         std::cout << "Starting:" << _app_name << std::endl;
         std::cout << "Argument count:" << argc << std::endl;
         std::cout << "Arguments are:" << std::endl;

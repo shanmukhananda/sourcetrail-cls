@@ -5,10 +5,10 @@ set -e
 script_dir=$(realpath $(dirname $0))
 project_dir=$(realpath ${script_dir}/../..)
 cd ${project_dir}
+source ${project_dir}/scripts/linux/env.sh
 
 function format_cpp_files() {
-    cpp_files=$(find -name "*.c" \
-        -or -name "*.c" \
+    cpp_files=$(find ${project_dir}/src -name "*.c" \
         -or -name "*.cc" \
         -or -name "*.cpp" \
         -or -name "*.h" \
@@ -22,7 +22,7 @@ function format_cpp_files() {
 }
 
 function format_cmake() {
-    cmake_files=$(find -name "CMakeLists.txt")
+    cmake_files=$(find ${project_dir} -name "CMakeLists.txt")
     for cmake_file in ${cmake_files}
     do
         echo "Formating ${cmake_file}"

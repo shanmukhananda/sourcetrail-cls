@@ -192,7 +192,7 @@ void package::print(std::ostream& os) const {
 
     std::size_t var_count{};
     for (const auto& var : _variables) {
-        os << "variables(" << ++fcn_count << "):\n";
+        os << "variables(" << ++var_count << "):\n";
         os << var << "\n";
     }
 }

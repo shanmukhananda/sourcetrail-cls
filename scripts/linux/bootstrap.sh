@@ -20,9 +20,13 @@ function install_dependencies() {
         apt-utils \
         build-essential \
         clang-format \
+        clang-tidy \
+        clang-tools \
         cmake \
+        cppcheck \
         git \
         libboost-all-dev \
+        pmccabe \
         python3-pip \
         rsync \
         wget \

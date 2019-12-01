@@ -20,6 +20,9 @@ void cls2srctrl::create_srctrldb() {
     // @todo: debug why the file created by std::filesystem::path fails to
     // load in Sourcetrail
     std::string output_fname = "project.srctrldb";
+    std::cout << "WARNING: user specifed output path " << _cfg.srctrldb_output()
+              << " cannot be used;"
+              << "output file created is " << output_fname << std::endl;
     auto is_open = _srctrl_db_writer.open(output_fname);
     throw_on_error(is_open);
     auto is_begin_success = _srctrl_db_writer.beginTransaction();
@@ -58,12 +61,6 @@ void cls2srctrl::read_json(std::istream& is) {
     const auto& sourceinfo_ = root.get_child("sourceinfo");
     _sourceinfo.read_json(sourceinfo_);
     // _sourceinfo.print(std::cout);
-}
-
-void cls2srctrl::record_sample_data() {
-    auto id = _srctrl_db_writer.recordSymbol(
-        {"::", {{"void", "hello_sourcetraildb", "()"}}});
-    throw_on_error(id != 0);
 }
 
 // @todo: check the return values, throw on error
@@ -212,8 +209,8 @@ void cls2srctrl::record_calls(const int caller_id,
 
         _srctrl_db_writer.recordSymbolKind(callee_id,
                                            sourcetrail::SymbolKind::FUNCTION);
-        auto call_id = _srctrl_db_writer.recordReference(
-            caller_id, callee_id, sourcetrail::ReferenceKind::CALL);
+        _srctrl_db_writer.recordReference(caller_id, callee_id,
+                                          sourcetrail::ReferenceKind::CALL);
     }
 }
 
