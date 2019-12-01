@@ -12,7 +12,9 @@
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
       "wslPath": "${defaultWSLPath}",
-      "addressSanitizerRuntimeFlags": "detect_leaks=0"
+      "addressSanitizerRuntimeFlags": "detect_leaks=0",
+      "intelliSenseMode": "linux-gcc-x64",
+      "variables": []
     }
   ]
 }

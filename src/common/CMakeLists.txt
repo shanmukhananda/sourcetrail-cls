@@ -1,5 +1,6 @@
 project(sourcetrail-cls.common)
-set(hpp_list pch.hpp)
-set(cpp_list pch.cpp)
-set(file_list ${hpp_list} ${cpp_list})
-add_custom_target(${PROJECT_NAME} SOURCES ${file_list})
+set(src_list pch.cpp pch.hpp)
+add_library(${PROJECT_NAME} ${src_list})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 CXX_EXTENSIONS
+                                                 OFF)
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)

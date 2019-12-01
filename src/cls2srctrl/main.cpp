@@ -1,27 +1,33 @@
 #include "common/pch.hpp"
 
-#include "cls2srctrl/cls2srctrl.hpp"
-#include "cls2srctrl/config.hpp"
+#include "cls2srctrl/app_entry.hpp"
 
-namespace cls2st {
-void run(int argc, char** argv) {
-    cls2st::config cfg(argc, argv);
-    if (cfg.wait_for_key()) {
-        std::cout << "press any char and enter to continue\n";
-        char x{};
-        std::cin >> x;
-        std::cout << "received input:" << x << ", continuing...\n";
+namespace launcher {
+class launcher_raii {
+public:
+    launcher_raii(int argc, char** argv) {
+        _app_name = argv[0];
+        std::cout << "Starting:" << _app_name << std::endl;
+        std::cout << "Argument count:" << argc << std::endl;
+        std::cout << "Arguments are:" << std::endl;
+        for (int arg_idx = 0; arg_idx < argc; ++arg_idx) {
+            std::cout << argv[arg_idx] << std::endl;
+        }
     }
-    cls2st::cls2srctrl app(cfg);
-    app.parse_cls();
-    app.create_srctrldb();
-}
-} // namespace cls2st
+    ~launcher_raii() {
+        std::cout << "Exiting:" << _app_name << std::endl;
+    }
 
-int main(int argc, char** argv) {
+private:
+    std::string _app_name;
+};
+
+int run_main(int argc, char** argv,
+             std::function<void(int, char**)> app_entry) {
+    launcher_raii launch_info_raii(argc, argv);
     auto exit_status{EXIT_SUCCESS};
     try {
-        cls2st::run(argc, argv);
+        app_entry(argc, argv);
     } catch (const std::exception& ex) {
         std::cerr << argv[0] << ":caught exception:" << ex.what() << std::endl;
         exit_status = EXIT_FAILURE;
@@ -30,4 +36,9 @@ int main(int argc, char** argv) {
         exit_status = EXIT_FAILURE;
     }
     return exit_status;
+}
+} // namespace launcher
+
+int main(int argc, char** argv) {
+    return launcher::run_main(argc, argv, cls2st::run);
 }

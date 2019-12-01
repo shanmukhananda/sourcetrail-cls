@@ -26,6 +26,6 @@ pushd ${results_dir} > /dev/null
 ${install_dir}/bin/sourcetrail-cls.cls2srctrl \
     --cls_input ${project_dir}/data/cls.json \
     --srctrldb_output ${results_dir}/cls.scrtrldb \
-    --wait_for_key true
+    --wait_for_key false
 
 popd > /dev/null

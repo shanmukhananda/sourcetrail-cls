@@ -14,25 +14,45 @@
 ## Demo
 
 Sourcetrial project created from [CLS JSON file](data/cls.json)
+
 ![Alt Text](docs/demo.gif)
 
 ## Installation
 
-- `scripts/linux/bootstrap.sh`
+- For Ubuntu/WSL
+    - Run `scripts/linux/bootstrap.sh`
+
+- For Visual Studio
+    - Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with below Workloads
+        - [Desktop development for C++](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=vs-2019)
+        - [Linux development for C++](https://docs.microsoft.com/en-us/cpp/linux/download-install-and-setup-the-linux-development-workload?view=vs-2019)
+    - [Install Windows Subystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+    - Launch Ubuntu bash shell and execute `scripts/linux/bootstrap.sh`
 
 ## Build
 
-- `scripts/linux/build.sh`
+- For Ubuntu/WSL
+    - Run `scripts/linux/build.sh`
+    
+- For Visual Studio
+    - Right click on `sourcetrail-cls` folder
+    - Choose `Open in Visual Studio`
+    - Build > Build All
 
 ## Usage
 
-- `scripts/linux/run.sh`
+- For Ubuntu/WSL
+    - Run `scripts/linux/run.sh`
+    - This runs the cls2srctrl app with example CLS input `data/cls.json`. Modify `run.sh` according to your need
 
-This runs the cls2srctrl app with example CLS input `data/cls.json`. Modify `run.sh` according to your need
+- For Visual Studio
+    - Select Configuration `WSL-Debug`
+    - Select Start Item `sourcetrail-cls.cls2srctrl (src\\cls2srctrl\\sourcetrail-cls.cls2srctrl)` from drop down
+    - Lauch using F5 or Green Play Button
 
-- `scripts/linux/code_format.sh`
+## Code Format
 
-Use this script to format C++ and CMake files
+Both C++ and CMake files can be formatted using `scripts/linux/code_format.sh`
 
 ## Known Issues
 

@@ -1,4 +1,6 @@
-#include "types.hpp"
+#include "common/pch.hpp"
+
+#include "cls2srctrl/types.hpp"
 
 namespace cls2st {
 namespace types {
