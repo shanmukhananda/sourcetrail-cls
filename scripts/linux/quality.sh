@@ -30,6 +30,8 @@ function run_clang_tidy() {
     do
         echo "clang-tidy ${cpp_file}"
         clang-tidy \
+            -quiet \
+            -checks='*',-fuchsia-default-arguments \
             -p=${build_dir} \
             ${cpp_file}
     done

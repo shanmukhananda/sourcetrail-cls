@@ -8,6 +8,8 @@ namespace types {
 using path_t = std::string;
 using package_hierarchy_t = std::vector<std::string>;
 using class_hierarchy_t = std::vector<std::string>;
+using cmdline_args_t = gsl::span<const char* const>;
+using entry_function_t = std::function<void(types::cmdline_args_t)>;
 
 // @todo: replace print with operator << or write method to get back json file
 class a_call {

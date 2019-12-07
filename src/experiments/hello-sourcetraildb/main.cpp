@@ -10,15 +10,11 @@ void throw_on_error(const sourcetrail::SourcetrailDBWriter& writer,
     }
 }
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cerr << "usage: " << argv[0] << " output.srctrldb" << std::endl;
-        return EXIT_FAILURE;
-    }
+int main() {
     sourcetrail::SourcetrailDBWriter writer;
-
-    std::cout << "Opening writer " << argv[1] << std::endl;
-    auto is_open = writer.open(argv[1]);
+    const std::string output_file = "hello_sourcetraildb.srctrldb";
+    std::cout << "Opening writer " << output_file << std::endl;
+    auto is_open = writer.open(output_file);
     throw_on_error(writer, is_open);
 
     std::cout << "Begin Transaction" << std::endl;

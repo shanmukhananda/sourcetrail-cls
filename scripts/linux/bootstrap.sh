@@ -48,6 +48,9 @@ function download_file() {
 function download_packages() {
     srctraildb_url=https://github.com/CoatiSoftware/SourcetrailDB/archive/master.tar.gz
     download_file SourcetrailDB ${srctraildb_url}
+
+    gsl_url=https://github.com/microsoft/GSL/archive/master.tar.gz
+    download_file GSL ${gsl_url}
 }
 
 function install_SourcetrailDB() {
@@ -71,6 +74,29 @@ function install_SourcetrailDB() {
     # make install
 }
 
+function install_GSL() {
+    cd ${packages_dir}/GSL
+    extracted_folder=GSL-master
+    archive_file=master.tar.gz
+    if [ ! -e ${extracted_folder} ]
+    then
+        mkdir -p ${extracted_folder}
+        tar xzf ${archive_file} --directory=${extracted_folder} --strip-components=1
+    fi
+    echo ${extracted_folder}
+    cd ${extracted_folder}
+    mkdir -p ${build_type}
+    cd ${build_type}
+    cmake \
+        -D CMAKE_BUILD_TYPE=${build_type} \
+        -D CMAKE_INSTALL_PREFIX=${install_dir} \
+        -D GSL_TEST=OFF \
+        ..
+    make -j${cores}
+    make install
+}
+
 install_dependencies
 download_packages
 install_SourcetrailDB
+install_GSL

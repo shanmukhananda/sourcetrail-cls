@@ -3,8 +3,8 @@
 #include "cls2srctrl/config.hpp"
 
 namespace cls2st {
-config::config(int argc, char** argv) {
-    parse(argc, argv);
+config::config(const types::cmdline_args_t& arguments) {
+    parse(arguments);
 }
 
 const types::path_t& config::cls_input() const {
@@ -19,7 +19,7 @@ bool config::wait_for_key() const {
     return _wait_for_key;
 }
 
-void config::parse(int argc, char** argv) {
+void config::parse(const types::cmdline_args_t& arguments) {
     po::options_description cmd_opts("options");
     // clang-format off
         cmd_opts.add_options()
@@ -30,9 +30,11 @@ void config::parse(int argc, char** argv) {
         ;
     // clang-format on
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, cmd_opts), vm);
+    po::store(po::parse_command_line(arguments.size(), arguments.data(),
+                                     cmd_opts),
+              vm);
 
-    if (vm.count("help")) {
+    if (vm.count("help") != 0u) {
         std::cout << cmd_opts << std::endl;
         return;
     }
